@@ -154,3 +154,11 @@ cython_debug/
 # IDE settings
 .vscode/
 .idea/
+
+# Coding agents
+/.claude
+/.codex
+/.gemini
+
+# temp files
+/tmp
