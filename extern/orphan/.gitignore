@@ -1,0 +1,8 @@
+# Ignore everything in this directory
+*
+
+# Except markdown files
+!*.md
+
+# And this .gitignore file itself
+!.gitignore
