@@ -161,4 +161,9 @@ cython_debug/
 /.gemini
 
 # temp files
-/tmp
+/tmp/*
+!/tmp/README.md
+
+# extern orphan dependencies
+/extern/orphan/*
+!/extern/orphan/README.md
