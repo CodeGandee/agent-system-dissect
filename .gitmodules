@@ -2,3 +2,7 @@
 	path = magic-context
 	url = https://github.com/igamenovoer/magic-context.git
 	branch = main
+[submodule "extern/tracked/codex"]
+	path = extern/tracked/codex
+	url = https://github.com/imsight-forks/codex
+	branch = hz-dev
