@@ -27,4 +27,4 @@ The system SHALL save the recorded traffic data in a structured format (e.g., JS
 
 #### Scenario: Save to File
 - **WHEN** a request/response cycle is complete
-- **THEN** the system appends the traffic data to a file in the specified output directory
+- **THEN** the system appends the traffic data to `tmp/codex-traffic/traffic.jsonl` in the workspace
