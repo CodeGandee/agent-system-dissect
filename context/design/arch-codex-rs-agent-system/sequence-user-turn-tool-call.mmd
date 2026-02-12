@@ -1,0 +1,44 @@
+sequenceDiagram
+participant U as "User"
+participant UI as "TUI / Exec<br/>/ AppServer"
+participant CT as "CodexThread"
+participant C as "Codex"
+participant S as "Session"
+participant H as "Context<br/>Manager"
+participant TR as "ToolRouter"
+participant MC as "ModelClient<br/>Session"
+participant API as "Responses API"
+participant TOR as "Tool<br/>Orchestrator"
+
+U->>UI: enter prompt
+UI->>CT: submit<br/>(Op::UserTurn)
+CT->>C: submit(op)
+C->>S: route op<br/>(submission_loop)
+S->>S: new_turn_with_sub_id()
+S->>S: seed initial<br/>context
+S-->>UI: turn started
+
+loop sampling cycle
+  S->>H: clone_history()<br/>.for_prompt()
+  S->>TR: build tool specs
+  S->>MC: stream(Prompt)
+  MC->>API: response.create<br/>/ response.append
+  API-->>MC: ResponseEvent stream
+
+  alt assistant/reasoning output
+    S->>H: record conversation items
+    S-->>UI: ItemStarted/Delta<br/>/ ItemCompleted
+  else tool call item
+    S->>TR: build_tool_call(item)
+    TR->>TOR: dispatch tool call
+    alt approval required
+      TOR-->>UI: ExecApprovalRequest<br/>or RequestUserInput
+      UI->>S: Op::ExecApproval<br/>or Op::UserInputAnswer
+    end
+    TOR->>TOR: select sandbox<br/>and execute
+    TOR-->>S: ResponseInputItem<br/>(tool output)
+    S->>H: record tool output
+  end
+end
+
+S-->>UI: turn complete

@@ -1,0 +1,69 @@
+classDiagram
+direction LR
+
+namespace Interface {
+  class TUI
+  class ExecCLI
+  class AppServer
+}
+
+namespace Threading {
+  class ThreadManager
+  class CodexThread
+}
+
+namespace CoreTurn {
+  class Codex
+  class Session
+  class SessionTask
+  class RegularTask
+  class ActiveTurn
+}
+
+namespace Context {
+  class TurnContext
+  class SessionState
+  class ContextManager
+  class CompactTask
+}
+
+namespace Tooling {
+  class ToolRouter
+  class ToolCallRuntime
+  class ToolRegistry
+  class ToolOrchestrator
+}
+
+namespace ModelIO {
+  class Prompt
+  class ModelClientSession
+  class ResponseEventStream
+}
+
+namespace External {
+  class ResponsesAPI
+  class MCPServers
+}
+
+TUI --> CodexThread
+ExecCLI --> CodexThread
+AppServer --> CodexThread
+ThreadManager --> Codex
+CodexThread --> Codex
+Codex --> Session
+Session --> ActiveTurn
+Session --> SessionTask
+SessionTask <|.. RegularTask
+Session --> TurnContext
+Session --> SessionState
+SessionState --> ContextManager
+Session --> CompactTask
+ContextManager --> Prompt
+Session --> ToolRouter
+ToolCallRuntime --> ToolRouter
+ToolRouter --> ToolRegistry
+ToolRegistry --> ToolOrchestrator
+Session --> ModelClientSession
+ModelClientSession --> ResponseEventStream
+ResponseEventStream --> ResponsesAPI
+ToolRouter --> MCPServers

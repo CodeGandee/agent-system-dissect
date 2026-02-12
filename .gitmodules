@@ -6,3 +6,7 @@
 	path = extern/tracked/codex
 	url = https://github.com/imsight-forks/codex
 	branch = hz-dev
+[submodule "extern/tracked/flashinfer"]
+	path = extern/tracked/flashinfer
+	url = https://github.com/flashinfer-ai/flashinfer
+	branch = main

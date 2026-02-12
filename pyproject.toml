@@ -35,5 +35,35 @@ libclang = "*"
 build-codex-rs = { cmd = 'bash -lc "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=cc cargo build --bin codex"', cwd = "extern/tracked/codex/codex-rs", description = "Build Rust codex binary from vendored codex-rs" }
 build-gui = { cmd = 'bash -lc "if ! command -v pnpm >/dev/null 2>&1; then echo \"Error: pnpm is required to build GUI artifacts.\" >&2; echo \"Install it with: pixi global install --environment codex-js pnpm\" >&2; echo \"Or: corepack enable && corepack prepare pnpm@10.29.3 --activate\" >&2; exit 1; fi; pnpm --dir extern/tracked/codex install --frozen-lockfile; pnpm --dir extern/tracked/codex/shell-tool-mcp build"', description = "Build JS GUI-related package (shell-tool-mcp) with pnpm precheck" }
 
+[tool.pixi.feature.flashinfer-dev]
+channels = ["nvidia", "conda-forge"]
+
+[tool.pixi.feature.flashinfer-dev.dependencies]
+python = "3.13.*"
+cmake = "*"
+ninja = "*"
+pkg-config = "*"
+git = "*"
+cuda-version = "12.9.*"
+cuda-nvcc = "12.9.*"
+cuda-cudart = "12.9.*"
+cuda-libraries-dev = "12.9.*"
+
+[tool.pixi.feature.flashinfer-dev.pypi-dependencies]
+"torch" = { version = "*", index = "https://download.pytorch.org/whl/cu129" }
+"flashinfer-python" = { path = "extern/tracked/flashinfer", editable = true }
+"flashinfer-cubin" = "*"
+"flashinfer-jit-cache" = { version = "*", index = "https://flashinfer.ai/whl/cu129/" }
+
+[tool.pixi.feature.flashinfer-dev.pypi-options]
+no-build-isolation = ["flashinfer-python"]
+
+[tool.pixi.feature.flashinfer-dev.tasks]
+fi-preflight = { cmd = "bash scripts/probe/flashinfer/preflight.sh", description = "Validate GPU visibility and CUDA/PyTorch readiness for flashinfer-dev" }
+fi-sync = { cmd = 'bash -lc "pixi install -e flashinfer-dev --manifest-path pyproject.toml"', description = "Synchronize flashinfer-dev environment from Pixi manifest declarations" }
+fi-show-config = { cmd = 'bash -lc "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0} python -m flashinfer show-config"', description = "Show FlashInfer installation and runtime configuration" }
+fi-smoke = { cmd = 'bash -lc "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0} python scripts/probe/flashinfer/smoke.py"', description = "Run a minimal FlashInfer CUDA smoke test" }
+
 [tool.pixi.environments]
 codex-build = { features = ["codex-build"], no-default-feature = true }
+flashinfer-dev = { features = ["flashinfer-dev"], no-default-feature = true }

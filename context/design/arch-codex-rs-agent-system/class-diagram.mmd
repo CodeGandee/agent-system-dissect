@@ -1,0 +1,109 @@
+classDiagram
+direction LR
+
+class CodexThread {
+  +submit(op)
+  +next_event()
+  +steer_input(input)
+}
+
+class Codex {
+  -tx_sub
+  -rx_event
+  -session
+  +submit(op)
+  +next_event()
+}
+
+class Session {
+  -state: SessionState
+  -active_turn: ActiveTurn?
+  -services: SessionServices
+  +new_turn_with_sub_id(...)
+  +spawn_task(...)
+  +steer_input(...)
+  +record_conversation_items(...)
+  +send_event(...)
+}
+
+class SessionState {
+  +session_configuration
+  +history: ContextManager
+  +record_items(...)
+  +replace_history(...)
+}
+
+class TurnContext {
+  +sub_id
+  +cwd
+  +approval_policy
+  +sandbox_policy
+  +tools_config
+  +model_info
+  +resolve_turn_metadata_header()
+}
+
+class ActiveTurn {
+  +tasks: IndexMap
+  +turn_state: TurnState
+}
+
+class TurnState {
+  +pending_input
+  +pending_approvals
+  +pending_user_input
+  +pending_dynamic_tools
+}
+
+class ContextManager {
+  +record_items(...)
+  +for_prompt(...)
+  +drop_last_n_user_turns(...)
+  +estimate_token_count(...)
+}
+
+class ToolRouter {
+  +build_tool_call(item)
+  +dispatch_tool_call(...)
+  +specs()
+}
+
+class ToolCallRuntime {
+  +handle_tool_call(call,...)
+}
+
+class ToolRegistry {
+  +dispatch(invocation)
+}
+
+class ToolOrchestrator {
+  +run(runtime, req,...)
+}
+
+class ModelClientSession {
+  +stream(prompt,...)
+}
+
+class SessionTask {
+  <<trait>>
+  +run(...)
+  +abort(...)
+}
+
+class RegularTask {
+  +run(...)
+}
+
+SessionTask <|.. RegularTask
+CodexThread --> Codex
+Codex --> Session
+Session --> SessionState
+Session --> TurnContext
+Session --> ActiveTurn
+ActiveTurn --> TurnState
+SessionState --> ContextManager
+Session --> ToolRouter
+ToolCallRuntime --> ToolRouter
+ToolRouter --> ToolRegistry
+ToolRegistry --> ToolOrchestrator
+Session --> ModelClientSession
