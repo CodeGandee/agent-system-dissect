@@ -1,0 +1,144 @@
+{
+  "run_started_utc": "2026-02-12T08:26:50.158499+00:00",
+  "run_finished_utc": "2026-02-12T08:26:58.940564+00:00",
+  "workspace_root": "<WORKSPACE_ROOT>",
+  "tutorial_dir": "<WORKSPACE_ROOT>/docs/tutorials/misc/codex-python-calls",
+  "inputs_file": "<WORKSPACE_ROOT>/docs/tutorials/misc/codex-python-calls/inputs/cases.json",
+  "outputs_dir": "<WORKSPACE_ROOT>/docs/tutorials/misc/codex-python-calls/outputs",
+  "codex_candidates": [
+    "<HOME>/.bun/bin/codex"
+  ],
+  "selected_codex": "<HOME>/.bun/bin/codex",
+  "selected_codex_version": "codex-cli 0.98.0",
+  "codex_home": "<WORKSPACE_ROOT>/.codex",
+  "conversation_file": "<WORKSPACE_ROOT>/docs/tutorials/misc/codex-python-calls/outputs/conversation-inspection.json",
+  "tests": [
+    {
+      "approach": "exec_stateless",
+      "status": "ok",
+      "command": [
+        "<HOME>/.bun/bin/codex",
+        "exec",
+        "--json"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "duration_sec": 1.81,
+      "prompt_text": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+      "expected_reply": "12",
+      "exact_match": true,
+      "thread_id": "019c50f5-c672-7d41-8491-a0898456b474",
+      "final_message": "12",
+      "event_count": 4,
+      "json_parse_error_count": 0,
+      "json_parse_errors": [],
+      "stderr_tail": "Reading prompt from stdin...\n",
+      "stateless_mode": "one_off_non_resume",
+      "supports_ephemeral": false,
+      "notes": [
+        "host codex does not expose --ephemeral for exec; using non-resume one-off invocation"
+      ],
+      "success": true,
+      "conversation_turn": {
+        "input": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+        "expected_reply": "12",
+        "actual_reply": "12",
+        "exact_match": true
+      }
+    },
+    {
+      "approach": "exec_persistent_resume",
+      "success": true,
+      "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+      "same_thread_on_resume": true,
+      "session_persistence_proof": {
+        "reference_code_from_turn_1": "REF-F728E8199DFD",
+        "turn_2_expected_to_recall_reference_code": true,
+        "turn_2_exact_match": true
+      },
+      "turn_1": {
+        "approach": "exec_persistent_turn_1",
+        "status": "ok",
+        "command": [
+          "<HOME>/.bun/bin/codex",
+          "exec",
+          "--json"
+        ],
+        "returncode": 0,
+        "timed_out": false,
+        "duration_sec": 2.839,
+        "prompt_text": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `REF-F728E8199DFD`. For this turn, reply with exactly `stored` and nothing else.",
+        "expected_reply": "stored",
+        "exact_match": true,
+        "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+        "final_message": "stored",
+        "event_count": 4,
+        "json_parse_error_count": 0,
+        "json_parse_errors": [],
+        "stderr_tail": "Reading prompt from stdin...\n"
+      },
+      "turn_2": {
+        "approach": "exec_persistent_turn_2_resume",
+        "status": "ok",
+        "command": [
+          "<HOME>/.bun/bin/codex",
+          "exec",
+          "--json",
+          "resume",
+          "019c50f5-cd7d-7c21-9850-2ca90669989a"
+        ],
+        "returncode": 0,
+        "timed_out": false,
+        "duration_sec": 1.937,
+        "prompt_text": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+        "expected_reply": "REF-F728E8199DFD",
+        "exact_match": true,
+        "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+        "final_message": "REF-F728E8199DFD",
+        "event_count": 4,
+        "json_parse_error_count": 0,
+        "json_parse_errors": [],
+        "stderr_tail": "2026-02-12T08:26:55.015511Z ERROR codex_core::rollout::list: state db missing rollout path for thread 019c50f5-cd7d-7c21-9850-2ca90669989a\nReading prompt from stdin...\n"
+      },
+      "conversation_turns": [
+        {
+          "turn": 1,
+          "input": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `REF-F728E8199DFD`. For this turn, reply with exactly `stored` and nothing else.",
+          "expected_reply": "stored",
+          "actual_reply": "stored",
+          "exact_match": true
+        },
+        {
+          "turn": 2,
+          "input": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+          "expected_reply": "REF-F728E8199DFD",
+          "actual_reply": "REF-F728E8199DFD",
+          "exact_match": true
+        }
+      ]
+    },
+    {
+      "approach": "app_server_stateful",
+      "status": "ok",
+      "success": true,
+      "duration_sec": 2.133,
+      "prompt_text": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+      "expected_reply": "5",
+      "exact_match": true,
+      "thread_id": "019c50f5-e01b-7c32-b700-2520ff80246a",
+      "turn_id": "0",
+      "final_message": "5",
+      "message_count": 28,
+      "json_parse_error_count": 0,
+      "json_parse_errors": [],
+      "error": null,
+      "conversation_turn": {
+        "input": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+        "expected_reply": "5",
+        "actual_reply": "5",
+        "exact_match": true
+      }
+    }
+  ],
+  "all_success": true
+}

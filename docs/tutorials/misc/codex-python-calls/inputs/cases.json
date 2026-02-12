@@ -1,0 +1,19 @@
+{
+  "exec_stateless": {
+    "prompt": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+    "expected_reply": "12",
+    "prefer_ephemeral": true,
+    "timeout_sec": 900
+  },
+  "exec_persistent": {
+    "turn1_prompt_template": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `{reference_code}`. For this turn, reply with exactly `stored` and nothing else.",
+    "turn1_expected_reply": "stored",
+    "turn2_prompt": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+    "timeout_sec": 900
+  },
+  "app_server": {
+    "prompt": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+    "expected_reply": "5",
+    "timeout_sec": 300
+  }
+}

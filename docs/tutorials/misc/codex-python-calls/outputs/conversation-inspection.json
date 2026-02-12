@@ -1,0 +1,57 @@
+{
+  "generated_utc": "2026-02-12T08:26:58.935367+00:00",
+  "records": [
+    {
+      "approach": "exec_stateless",
+      "mode": "one_off_non_resume",
+      "thread_id": "019c50f5-c672-7d41-8491-a0898456b474",
+      "turns": [
+        {
+          "input": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+          "expected_reply": "12",
+          "actual_reply": "12",
+          "exact_match": true
+        }
+      ]
+    },
+    {
+      "approach": "exec_persistent_resume",
+      "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+      "same_thread_on_resume": true,
+      "turns": [
+        {
+          "turn": 1,
+          "input": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `REF-F728E8199DFD`. For this turn, reply with exactly `stored` and nothing else.",
+          "expected_reply": "stored",
+          "actual_reply": "stored",
+          "exact_match": true
+        },
+        {
+          "turn": 2,
+          "input": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+          "expected_reply": "REF-F728E8199DFD",
+          "actual_reply": "REF-F728E8199DFD",
+          "exact_match": true
+        }
+      ],
+      "proof": {
+        "reference_code_from_turn_1": "REF-F728E8199DFD",
+        "turn_2_expected_to_recall_reference_code": true,
+        "turn_2_exact_match": true
+      }
+    },
+    {
+      "approach": "app_server_stateful",
+      "thread_id": "019c50f5-e01b-7c32-b700-2520ff80246a",
+      "turn_id": "0",
+      "turns": [
+        {
+          "input": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+          "expected_reply": "5",
+          "actual_reply": "5",
+          "exact_match": true
+        }
+      ]
+    }
+  ]
+}

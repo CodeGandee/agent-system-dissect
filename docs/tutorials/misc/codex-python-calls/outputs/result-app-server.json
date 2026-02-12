@@ -1,0 +1,22 @@
+{
+  "approach": "app_server_stateful",
+  "status": "ok",
+  "success": true,
+  "duration_sec": 2.133,
+  "prompt_text": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+  "expected_reply": "5",
+  "exact_match": true,
+  "thread_id": "019c50f5-e01b-7c32-b700-2520ff80246a",
+  "turn_id": "0",
+  "final_message": "5",
+  "message_count": 28,
+  "json_parse_error_count": 0,
+  "json_parse_errors": [],
+  "error": null,
+  "conversation_turn": {
+    "input": "Compute 9 - 4. Reply with exactly `5` and nothing else.",
+    "expected_reply": "5",
+    "actual_reply": "5",
+    "exact_match": true
+  }
+}

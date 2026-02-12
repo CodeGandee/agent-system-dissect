@@ -1,0 +1,71 @@
+{
+  "approach": "exec_persistent_resume",
+  "success": true,
+  "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+  "same_thread_on_resume": true,
+  "session_persistence_proof": {
+    "reference_code_from_turn_1": "REF-F728E8199DFD",
+    "turn_2_expected_to_recall_reference_code": true,
+    "turn_2_exact_match": true
+  },
+  "turn_1": {
+    "approach": "exec_persistent_turn_1",
+    "status": "ok",
+    "command": [
+      "<HOME>/.bun/bin/codex",
+      "exec",
+      "--json"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "duration_sec": 2.839,
+    "prompt_text": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `REF-F728E8199DFD`. For this turn, reply with exactly `stored` and nothing else.",
+    "expected_reply": "stored",
+    "exact_match": true,
+    "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+    "final_message": "stored",
+    "event_count": 4,
+    "json_parse_error_count": 0,
+    "json_parse_errors": [],
+    "stderr_tail": "Reading prompt from stdin...\n"
+  },
+  "turn_2": {
+    "approach": "exec_persistent_turn_2_resume",
+    "status": "ok",
+    "command": [
+      "<HOME>/.bun/bin/codex",
+      "exec",
+      "--json",
+      "resume",
+      "019c50f5-cd7d-7c21-9850-2ca90669989a"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "duration_sec": 1.937,
+    "prompt_text": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+    "expected_reply": "REF-F728E8199DFD",
+    "exact_match": true,
+    "thread_id": "019c50f5-cd7d-7c21-9850-2ca90669989a",
+    "final_message": "REF-F728E8199DFD",
+    "event_count": 4,
+    "json_parse_error_count": 0,
+    "json_parse_errors": [],
+    "stderr_tail": "2026-02-12T08:26:55.015511Z ERROR codex_core::rollout::list: state db missing rollout path for thread 019c50f5-cd7d-7c21-9850-2ca90669989a\nReading prompt from stdin...\n"
+  },
+  "conversation_turns": [
+    {
+      "turn": 1,
+      "input": "We are testing conversation persistence. Remember this exact reference code for a later turn in this same conversation: `REF-F728E8199DFD`. For this turn, reply with exactly `stored` and nothing else.",
+      "expected_reply": "stored",
+      "actual_reply": "stored",
+      "exact_match": true
+    },
+    {
+      "turn": 2,
+      "input": "What exact reference code did I ask you to remember in the previous turn? Reply with exactly that reference code and nothing else.",
+      "expected_reply": "REF-F728E8199DFD",
+      "actual_reply": "REF-F728E8199DFD",
+      "exact_match": true
+    }
+  ]
+}

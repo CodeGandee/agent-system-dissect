@@ -1,0 +1,33 @@
+{
+  "approach": "exec_stateless",
+  "status": "ok",
+  "command": [
+    "<HOME>/.bun/bin/codex",
+    "exec",
+    "--json"
+  ],
+  "returncode": 0,
+  "timed_out": false,
+  "duration_sec": 1.81,
+  "prompt_text": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+  "expected_reply": "12",
+  "exact_match": true,
+  "thread_id": "019c50f5-c672-7d41-8491-a0898456b474",
+  "final_message": "12",
+  "event_count": 4,
+  "json_parse_error_count": 0,
+  "json_parse_errors": [],
+  "stderr_tail": "Reading prompt from stdin...\n",
+  "stateless_mode": "one_off_non_resume",
+  "supports_ephemeral": false,
+  "notes": [
+    "host codex does not expose --ephemeral for exec; using non-resume one-off invocation"
+  ],
+  "success": true,
+  "conversation_turn": {
+    "input": "Compute 7 + 5. Reply with exactly `12` and nothing else.",
+    "expected_reply": "12",
+    "actual_reply": "12",
+    "exact_match": true
+  }
+}
