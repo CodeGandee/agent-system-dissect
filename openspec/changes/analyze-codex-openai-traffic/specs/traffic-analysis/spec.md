@@ -32,9 +32,19 @@ The system SHALL generate a readable report (e.g., Markdown) summarizing the fin
 #### Scenario: Include Full Conversation Log
 - **WHEN** analysis is complete
 - **THEN** the report includes a full conversation log section showing every captured request/response pair with:
-  - Request headers (with sensitive values like Authorization redacted)
-  - Full request body: model config, system instructions, input messages (each in collapsible sections), and tool definitions
-  - Response headers
-  - Full response body: parsed SSE events showing event types, content deltas, tool calls, and output items
-- **AND** all request and response bodies are wrapped in Markdown code blocks (fenced with triple backticks), using `json` language annotation for JSON content
-- **AND** long content (system instructions, message bodies) is wrapped in collapsible `<details>` sections to keep the report scannable
+  - Request headers (with sensitive values like Authorization redacted) in code blocks
+  - Response headers in code blocks
+  - Request body rendered as summarized key parts with explanations:
+    - Model name and config fields (stream, tool_choice, etc.) inline
+    - System instructions with character count and preview in a collapsible `<details>` section
+    - Input messages as a table (index, role, type, content preview) with full text in collapsible sections
+    - Tool definitions listed by name and type
+  - Response body rendered as a summarized SSE stream with:
+    - Byte size and event count
+    - Event type breakdown table (event type → count)
+    - Assembled output text in a collapsible `<details>` section
+    - Assembled reasoning summary in a collapsible `<details>` section
+    - Tool calls (if any) with function name and arguments
+    - Usage statistics (input/output/total tokens)
+- **AND** long content sections are wrapped in collapsible `<details>` sections to keep the report scannable
+- **AND** actual content excerpts (instructions text, message text, output text) use fenced code blocks within the collapsible sections

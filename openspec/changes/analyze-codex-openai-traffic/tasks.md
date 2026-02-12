@@ -66,3 +66,11 @@ Spec updated: all request/response bodies must be in fenced code blocks.
 - [x] 7.1 Simplify `format_request_body()`: render dict bodies as a single ```` ```json ```` block inside `<details>`, remove semantic decomposition (model config, instructions, messages, tools sections)
 - [x] 7.2 Simplify `format_response_body()`: render SSE string bodies as raw text in a ```` ``` ```` block inside `<details>`, remove `format_sse_response()` and `parse_sse_events()`
 - [x] 7.3 Verify: run analysis script and confirm all bodies in the report are inside fenced code blocks
+
+## 8. Summarized Body Rendering
+
+Replace raw code-block body dumps with summarized key parts and explanations.
+
+- [x] 8.1 Rewrite `format_request_body()`: decompose dict bodies into model/config, instructions (preview in `<details>`), input messages (table + `<details>`), and tools (list)
+- [x] 8.2 Rewrite `format_response_body()`: parse SSE events and render as event type table, assembled output text (`<details>`), reasoning summary (`<details>`), tool calls, and usage stats
+- [x] 8.3 Verify: run script, check report is concise (~30-50KB vs previous ~370KB) and all key information is present

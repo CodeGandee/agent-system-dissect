@@ -20,3 +20,20 @@ agent_system_dissect = { path = ".", editable = true }
 
 [tool.pixi.dependencies]
 python = "3.13.*"
+
+[tool.pixi.feature.codex-build.dependencies]
+rust = "1.93.*"
+just = "*"
+cargo-nextest = "*"
+pkg-config = "*"
+openssl = "*"
+cmake = "*"
+clang = "*"
+libclang = "*"
+
+[tool.pixi.feature.codex-build.tasks]
+build-codex-rs = { cmd = 'bash -lc "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=cc cargo build --bin codex"', cwd = "extern/tracked/codex/codex-rs", description = "Build Rust codex binary from vendored codex-rs" }
+build-gui = { cmd = 'bash -lc "if ! command -v pnpm >/dev/null 2>&1; then echo \"Error: pnpm is required to build GUI artifacts.\" >&2; echo \"Install it with: pixi global install --environment codex-js pnpm\" >&2; echo \"Or: corepack enable && corepack prepare pnpm@10.29.3 --activate\" >&2; exit 1; fi; pnpm --dir extern/tracked/codex install --frozen-lockfile; pnpm --dir extern/tracked/codex/shell-tool-mcp build"', description = "Build JS GUI-related package (shell-tool-mcp) with pnpm precheck" }
+
+[tool.pixi.environments]
+codex-build = { features = ["codex-build"], no-default-feature = true }

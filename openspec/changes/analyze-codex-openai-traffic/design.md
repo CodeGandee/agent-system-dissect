@@ -128,16 +128,30 @@ Traffic is logged to a JSONLines file where each line is a JSON object represent
 
 A dedicated Python script ingests the `.jsonl` file and produces a Markdown report containing:
 *   **Aggregate statistics**: Endpoint summary (paths, methods, counts), HTTP method breakdown, response status codes, and payload structure tables showing key paths with observed data types and occurrence counts.
-*   **Full conversation log**: Every captured request/response pair rendered with redacted headers (in code blocks), request body (in a fenced code block), and response body (in a fenced code block). No content is truncated — collapsible `<details>` sections manage readability for large bodies.
+*   **Full conversation log**: Every captured request/response pair rendered with redacted headers (in code blocks), summarized request body (model config, instructions preview, message table, tool list), and summarized response body (SSE event breakdown, assembled output text, reasoning summary, tool calls, usage statistics). Collapsible `<details>` sections manage readability for long content.
 *   **Rationale**: Leverages the project's Python ecosystem (pixi, scipy, etc.); flexible for custom analysis logic.
 
 ### 6a. Body Rendering in Conversation Log
 
-All request and response bodies in the conversation log are wrapped in Markdown fenced code blocks (triple backticks):
-*   **JSON bodies** (parsed `dict`): Rendered with `json.dumps(indent=2)` inside a `` ```json `` block, wrapped in a collapsible `<details>` section.
-*   **SSE responses** (`text/event-stream` strings): Rendered as raw SSE text inside a plain `` ``` `` block, wrapped in a collapsible `<details>` section. The raw format preserves `event:` and `data:` lines as captured — no parsing or restructuring.
-*   **Other string bodies**: Rendered in a plain `` ``` `` block.
-*   **Rationale**: Raw code blocks are faithful to the wire format, easy to copy-paste for further analysis, and unambiguous. Collapsible sections handle readability. Previous approach decomposed request bodies into semantic sections (model config, instructions, messages, tools) with mixed Markdown formatting — this was harder to maintain and violated the spec requirement that bodies be in code blocks.
+Request and response bodies in the conversation log are rendered as **summarized key parts with explanations**, not raw dumps. This keeps the report concise while preserving all important information.
+
+**Request bodies** (parsed `dict`) are decomposed into semantic sections:
+*   **Model & config**: Inline display of model name and key config fields (stream, tool_choice, parallel_tool_calls, etc.).
+*   **System instructions**: Character count shown inline, full text in a collapsible `<details>` section with a code block.
+*   **Input messages**: Table with index, role, type, and content preview. Each message's full content available in a collapsible `<details>` section.
+*   **Tools**: Listed by name and type (e.g., `exec_command` (function), `apply_patch` (custom)). Description text omitted for brevity.
+
+**SSE response bodies** (text/event-stream strings) are parsed and summarized:
+*   **Stream overview**: Total byte size and event count shown inline.
+*   **Event type breakdown**: Table mapping each event type to its count.
+*   **Output text**: Assembled from `response.output_text.delta` events, shown in a collapsible `<details>` section with a code block.
+*   **Reasoning summary**: Assembled from `response.reasoning_summary_text.delta` events, shown in a collapsible `<details>` section with a code block.
+*   **Tool calls**: Extracted from `response.function_call_arguments.done` events, showing function name and arguments.
+*   **Usage statistics**: Extracted from the `response.completed` event — input tokens, output tokens, total tokens (with cached/reasoning breakdowns if available).
+
+**Non-SSE dict bodies** (rare): Rendered as `json.dumps(indent=2)` in a code block inside `<details>` for simplicity.
+
+*   **Rationale**: Summarized rendering dramatically reduces report size (from ~370KB to ~30-50KB for 3 requests) while making the content more scannable and informative. Key parts (model, message flow, output text, usage) are immediately visible without expanding anything. Full content is still accessible via collapsible sections.
 
 ### 7. File Layout
 
