@@ -28,3 +28,13 @@ The system SHALL generate a readable report (e.g., Markdown) summarizing the fin
 #### Scenario: Create Markdown Report
 - **WHEN** analysis is complete
 - **THEN** the system saves a Markdown file containing the summary of endpoints, request counts, and payload structures
+
+#### Scenario: Include Full Conversation Log
+- **WHEN** analysis is complete
+- **THEN** the report includes a full conversation log section showing every captured request/response pair with:
+  - Request headers (with sensitive values like Authorization redacted)
+  - Full request body: model config, system instructions, input messages (each in collapsible sections), and tool definitions
+  - Response headers
+  - Full response body: parsed SSE events showing event types, content deltas, tool calls, and output items
+- **AND** all request and response bodies are wrapped in Markdown code blocks (fenced with triple backticks), using `json` language annotation for JSON content
+- **AND** long content (system instructions, message bodies) is wrapped in collapsible `<details>` sections to keep the report scannable
