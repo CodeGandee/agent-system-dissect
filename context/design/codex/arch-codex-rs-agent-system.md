@@ -254,7 +254,7 @@ This section is intentionally "why it exists" oriented (not an exhaustive API re
 | Class | Role | Key responsibilities (what it owns/does) | Simple example |
 | --- | --- | --- | --- |
 | `ToolRouter` | Parse tool calls + provide tool specs. | Build tool specs for the model prompt (`specs`).<br/>Convert `ResponseItem` → typed `ToolCall` (`build_tool_call`) including MCP parsing and `LocalShellCall` handling.<br/>Dispatch a `ToolCall` through `ToolRegistry`. | Model emits `mcp__codex_apps__calendar_create_event` → router routes it to MCP invocation `{server, tool, raw_arguments}` (not a normal function tool). |
-| `ToolCallRuntime` | Execute tool calls with concurrency control. | Enforce per-tool parallelism via read/write lock (parallel tools share read lock; serialized tools take write lock).<br/>Run tool calls asynchronously and respect turn cancellation. | Two `read_file` calls can run concurrently; a `shell` call is serialized and blocks other tools until it completes. |
+| `ToolCallRuntime` | Execute tool calls with concurrency control. | Enforce per-tool parallelism via read/write lock (parallel tools share read lock; serialized tools take write lock).<br/>Run tool calls asynchronously and respect turn cancellation. | Two `read_file` calls can run concurrently; `apply_patch` takes the write lock and blocks other tool calls until it completes. |
 | `ToolRegistry` | Handler lookup + invariants + gating. | Lookup handler by tool name; validate handler kind vs payload type.<br/>If handler says the call is mutating, wait for `turn_context.tool_call_gate` readiness (ghost snapshot gating).<br/>Convert handler output into a `ResponseInputItem` to be recorded as a tool output item. | `apply_patch` is mutating → registry waits for ghost snapshot readiness so `undo` has a reliable "before" state. |
 | `ToolHandler` (trait) | Implement one tool. | `kind()` + `matches_kind(...)` to assert payload compatibility.<br/>`is_mutating(...)` to declare whether gating should apply.<br/>`handle(invocation)` to produce a tool output. | `ShellHandler` parses JSON args, emits begin/finish events, and delegates policy mechanics to `ToolOrchestrator`. |
 | `ToolOrchestrator` | Central approvals + sandbox selection + retry semantics (exec-like runtimes). | Determine approval requirement (policy + execpolicy-derived requirement).<br/>Select initial sandbox; on sandbox denial, optionally prompt and retry unsandboxed when allowed.<br/>Support per-session caching via `with_cached_approval` (notably multi-target approvals like `apply_patch`). | Command denied by sandbox → orchestrator prompts "command failed; retry without sandbox?" and reruns without sandbox if approved. |
@@ -593,6 +593,12 @@ end
 4. Mutating tool calls wait on `tool_call_gate` readiness when needed (ghost snapshot gating).
 5. Handler-specific runtime uses `ToolOrchestrator` for policy mechanics.
 
+### Parallel tool calls
+- There are two "layers" of parallelism:
+  - **Prompt-level**: `Prompt.parallel_tool_calls` enables the model to emit multiple tool call items in a single provider response (only set when the selected model supports it).
+  - **Tool-level**: each tool spec declares `supports_parallel_tool_calls`; `ToolCallRuntime` enforces this via a read/write lock (parallel tools share the read lock; non-parallel tools take the write lock).
+- See sequence diagrams **2a** and **2b** for the common cases.
+
 ### Approval + sandbox choreography
 - `ToolOrchestrator` central flow:
   1. compute approval requirement,
@@ -604,7 +610,7 @@ end
 - MCP app tool calls can require an interactive `request_user_input` approval path based on MCP tool annotations.
 
 ### Tool outputs and follow-up turns
-- Tool calls queue tool execution futures; outputs are recorded into history as tool output items (`FunctionCallOutput`/`CustomToolCallOutput`, with MCP results serialized as `FunctionCallOutput`).
+- Tool call items are recorded to history immediately; tool execution futures are queued, and their outputs are usually recorded after `ResponseEvent::Completed` when draining in-flight tool futures (some guardrails emit immediate synthetic outputs).
 - `needs_follow_up=true` is set when a tool call is observed (and also if input was buffered during the stream), causing another sampling request in the same `run_turn` loop.
 
 ## Important Extension Points
